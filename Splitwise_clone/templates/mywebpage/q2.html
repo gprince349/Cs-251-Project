@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<style>
+		table ,th ,td {
+			border: 2px solid black;
+		}
+	</style>
+</head>
+
+
+<body>
+	<h1 style="color:purple">Tic Tok Toe</h1>
+
+<script>
+	var curr_row = 1;
+	var cum_score_1 =0;
+	var cum_score_2 =0;
+	var res = "T";
+	var textp1 = "cross.png";
+	var textp2 = "circle.png";
+		
+
+	var player = 1;
+	var val =0;
+	var arr = [[0,0,0],
+	[0,0,0],
+	[0,0,0]];
+
+
+function countdown(str){
+var timeleft = 5;
+var downloadTimer = setInterval(function(){
+  document.getElementById("timer").innerHTML = str + "! " + "Starting a new game in " + timeleft.toString(10) + " seconds" 
+  timeleft -= 1;
+  if(timeleft <= 0){
+    clearInterval(downloadTimer);
+  }
+}, 1000);
+
+     }
+      
+
+      
+  
+
+
+	function check(){
+		var winner = 0;
+		var count =0;
+		r1 = false;
+
+		for (var i = 2; i >= 0; i--) {
+
+				r1 = (arr[i][0] == arr[i][1]) && (arr[i][1] == arr[i][2]) && (arr[i][0] != 0)
+				if (r1 == true){
+					winner = arr[i][0];
+					break;
+				}
+
+				r1 = (arr[0][i] == arr[1][i]) && (arr[1][i] == arr[2][i]) && (arr[0][i] != 0)
+				if (r1 == true){
+					winner = arr[0][i];
+					break;
+				}
+
+		}
+
+		//diagonal1 check
+		if (r1 == false){
+				r1 = (arr[0][0] == arr[1][1]) && (arr[1][1] == arr[2][2]) && (arr[0][0] != 0)	
+				if (r1 == true ){
+					winner = arr[0][0];
+					}		
+
+		}
+
+		//diagonal2 check
+		if (r1 == false){
+				r1 = (arr[0][2] == arr[1][1]) && (arr[1][1] == arr[2][0]) && (arr[1][1] != 0)	
+				if (r1 == true ){
+					winner = arr[1][1];
+					}		
+
+		}
+
+
+
+		//tie check
+		if (r1 == false){
+			for (var i =2; i >= 0; i--) {
+				for (var j =2; j >= 0; j--) {
+					if(arr[i][j] == 0){
+						count++;
+					}
+
+				}
+
+			}
+
+			if(count == 0){
+				winner = "T";
+			}
+
+		}
+
+
+		return winner;
+	}
+
+	function change_fun(id1,id2,id){
+		if (arr[id1-1][id2-1] == 0){
+			if (player == 1){
+			document.getElementById(id).src=textp1;
+			arr[id1-1][id2-1] = 1;
+			player = 2;
+
+							}
+			else if (player == 2)
+				{ document.getElementById(id).src=textp2;
+			arr[id1-1][id2-1] = 2;
+			player = 1;}
+	
+		}
+
+		var value = check();
+		if (value == 1){
+			res = value;
+			cum_score_1 += 4;
+			row();
+			init_arr();
+			if(textp1 == "circle.png"){
+				textp1 = "cross.png";
+				textp2 = "circle.png";
+			}
+			else {
+				textp2 = "cross.png";
+				textp1 = "circle.png";
+			}
+
+			//document.getElementById("who won").innerHTML = 
+			countdown("Player 1 won");
+		
+		
+		}
+		else if (value == 2){
+			res = value;
+			cum_score_2 += 4;
+			row();
+			init_arr();
+			if(textp1 == "circle.png"){
+				textp1 = "cross.png";
+				textp2 = "circle.png";
+			}
+			else {
+				textp2 = "cross.png";
+				textp1 = "circle.png";
+			}
+			//document.getElementById("who won").innerHTML = 
+			countdown("Player 2 won");
+		}
+		else if (value == "T"){
+			res = value;
+			cum_score_1 += 1;
+			cum_score_2 += 1;
+			row();
+			init_arr();
+			if(textp1 == "circle.png"){
+				textp1 = "cross.png";
+				textp2 = "circle.png";
+			}
+			else {
+				textp2 = "cross.png";
+				textp1 = "circle.png";
+			}
+			countdown("Match Tied");
+		}
+		else{}
+
+
+
+	}
+
+	function init_arr(){
+		for (var i = 2 ; i >= 0; i--) {
+			for (var j = 3- 1; j >= 0; j--) {
+				
+				arr[i][j] = 0;
+				var id = (i+1).toString(10) + (j+1).toString(10);
+				document.getElementById(id).src="square.png";
+				// if(player == 1){
+				// 	player =2;
+				// }
+				// else {
+				// 	player =1 ;
+				// }
+			}
+		}
+	}
+
+
+	function row(){
+		var tab = document.getElementById("mytable");
+		var newRow = tab.insertRow(curr_row);
+		newRow.insertCell(0).innerHTML = curr_row;
+		newRow.insertCell(1).innerHTML = res;
+		newRow.insertCell(2).innerHTML = cum_score_1;
+		newRow.insertCell(3).innerHTML = cum_score_2;
+		curr_row = curr_row +1;
+	}
+
+	
+
+</script>
+
+<button  onclick="change_fun(1,1,'11')"><img id="11"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(1,2,'12')"><img id="12"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(1,3,'13')"><img id="13"src="square.png" alt="noimage" width="80" height="80"></button>
+<br>
+<button  onclick="change_fun(2,1,'21')"><img id="21"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(2,2,'22')"><img id="22"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(2,3,'23')"><img id="23"src="square.png" alt="noimage" width="80" height="80"></button>
+<br>
+<button  onclick="change_fun(3,1,'31')"><img id="31"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(3,2,'32')"><img id="32"src="square.png" alt="noimage" width="80" height="80"></button>
+<button  onclick="change_fun(3,3,'33')"><img id="33"src="square.png" alt="noimage" width="80" height="80"></button>
+<br>
+
+
+<p><button  onclick="init_arr()">Replay</button></p>
+
+<h2 id="timer"></h2>
+
+
+<p id="who won"></p>
+<table id="mytable" style="width:100%">
+	<tr>
+		<th>Serial_no</th>
+		<th>Result</th>
+		<th>Player1 Score Cumulative</th>
+		<th>Player2 Score Cumulative</th>
+	</tr>
+
+</table>
+
+
+</body>
+</html>

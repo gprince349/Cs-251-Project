@@ -1,0 +1,17 @@
+body{background-color: powderblue;}
+	h1 {color: blue;}
+	p {color:green;}
+	
+	#p1{
+		color:rgb(150,150,2);
+		border: 2px solid red;
+	}
+
+	p.class1{
+		color:rgb(150,150,2);
+		border: 2px solid blue;
+	}
+	p.class2{
+	color:rgb(150,150,2);
+		border: 2px solid green;
+	}
