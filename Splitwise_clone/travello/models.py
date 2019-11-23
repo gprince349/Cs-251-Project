@@ -20,13 +20,12 @@ class Destination(models.Model):
 #     id = models.TextField()
 #     trans_id = models.TextField()
 
-# class GROUP_MEMBERSHIP(models.Model):
-
-#     pid = models.TextField()
-#     gid = models.TextField()
-#     group_name = models.TextField(max_length=100)
-#     joined_date = models.TextField()
-#     left_date = models.TextField()
+class GROUP_MEMBERSHIP(models.Model):
+    pid = models.TextField()
+    gid = models.TextField()
+    group_name = models.TextField(max_length=100)
+    joined_date = models.TextField()
+    left_date = models.TextField()
 
 class id_friends(models.Model):
     myid = models.IntegerField()
@@ -34,13 +33,6 @@ class id_friends(models.Model):
     owe = models.IntegerField()
     lent = models.IntegerField()
 
-# class id_trans(models.Model):
-
-#     tid = models.TextField 
-#     desc = models.TextField(max_length=100)
-#     pid = models.TextField
-#     owe = models.IntegerField()
-#     lent = models.IntegerField()
 
 # class id_cummulative(models.Model):
 

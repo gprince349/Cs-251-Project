@@ -4,11 +4,14 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import *
 
+
+
 # Create your views here.
 mymessage = ""
 friend_name_list = []
+friend_id_list = []
 def update_list(x):
-    global friend_name_list, mymessage
+    global friend_name_list, mymessage, friend_id_list
     # mymessage = m
     friend_name_list = []
     myid = x
@@ -17,7 +20,8 @@ def update_list(x):
     for i in friend_list:
         friend_id_list.append(i.fid)
     for j in friend_id_list:
-        friend_name_list.append(str(User.objects.get(id=j).first_name))
+        u = [str(User.objects.get(id=j).first_name), j ]
+        friend_name_list.append(u)
    
 
 
@@ -52,12 +56,12 @@ def index(request):
      update_list(int(y))
     for f in friend_name_list:
         print(f)
-    return render(request,'homepage.html', {'mymessage': mymessage, 'friends': friend_name_list})
+    return render(request,'homepage.html', {'mymessage': mymessage, 'ids': friend_id_list ,'friends': friend_name_list})
 
 
 def add_friend(request):
     if request.method == 'POST':
-        friend_name = request.POST['friend_name']
+        
         friend_email = request.POST['friend_email']
         if User.objects.filter(email=friend_email).exists():
             curr_user = User.objects.get(email=friend_email)
@@ -72,9 +76,20 @@ def add_friend(request):
                 update_list(int(myid))
                 return render(request,'homepage.html', {'mymessage': 'successfully added', 'friends': friend_name_list})
         else :
-            print("chaman adqkjleq11111111111111111111")
-            mymessage = 'Invalid Credentials1'
+            mymessage = 'This email is not registered with splitwise'
             update_list(int(request.user.id))
             return render(request,'homepage.html', {'mymessage': mymessage, 'friends': friend_name_list})
     else:
         return redirect('/')
+
+
+
+def add_group(request):
+    if request.method == 'POST':
+        myid = request.user.id
+        friend_array = []
+        for i,j in request.POST.items():
+            friend_array.append(j)
+        
+        print(friend_array)
+    pass

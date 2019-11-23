@@ -29,6 +29,28 @@
     </style>
 </head>
 
+<script>
+        var a = 1;
+        function showform() {
+        if (a==0){
+          document.getElementById("group_form").style.display = "none";
+          a = 1;}
+          else {
+          document.getElementById("group_form").style.display = "block";
+          a =0;}
+        }
+        var i=4;
+        function add_row(){
+            var container = document.getElementById("inputs");
+             var input = document.createElement("input")
+                input.type = "text";
+                input.name = "friendemail[" + i + "]";
+                i = i+1;
+                input.placeholder = "Friend Email";
+            container.appendChild(input);
+            container.appendChild(document.createElement("br"));          
+        }
+        </script>
 <body>
     <!--::header part start::-->
     <header class="main_menu">
@@ -76,10 +98,10 @@
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="contact.html">Contact</a>
+                                    <a class="nav-link" href="#">Change Password</a>
                                 </li>
                             </ul>
-                        </div>
+                        
                         {% if user.is_authenticated %}
 							<li>User: {{user.first_name}}</li>
 							<li><a href="login_page/logout" class="btn_1 d-none d-lg-inline-block">Logout</a></li>
@@ -87,7 +109,7 @@
                             <a href="login_page/login" class="btn_1 d-none d-lg-inline-block">Login</a>
                             <a href="login_page/register" class="btn_1 d-none d-lg-inline-block">Signup</a>
 							{% endif %}
-                       
+                        </div>
                     </nav>
                 </div>
             </div>
@@ -109,22 +131,34 @@
                                 <h3>Add Friend</h3>
                                 <form action="add_friend" method="POST">
                                         {% csrf_token %}
-                                    <input type="text" name="friend_name" placeholder="Friend Name">
+                                   
                                     <input type="email" name="friend_email" placeholder="Friends Email">
                                     <input type="submit">
                                 </form>
                                 <p>{{mymessage}}</p><br>
                                 {% for x in friends %}
-                                 <p>{{x}}</p>
+                                <form action="transaction/transactions" method="POST">
+                                     {% csrf_token %}
+                                        <input type="hidden" name="fid" value="{{x.1}}">
+                                        <button name="friend" width="80px" type="submit">{{x.0}}</button>
+                                </form>
                                 {% endfor %}
                                 <br> <br>
                                 <h3>Create group</h3>
-                                <form action="create_group" method="POST">
+                                <button onclick="showform()">ADD GROUP</button>
+                                <button onclick="add_row()">Add more people</button><br>
+                                <form style="display: none;" action="add_group" id="group_form" method="POST">
                                         {% csrf_token %}
-                                    <input type="text" name="group_name" placeholder="Group Name">
                                     
-                                    <input type="submit" value="Add Members">
+                                    <input type="text" name="group_name" placeholder="Group Name"><br>
+                                    <div id="inputs">
+                                    <input type="text" name="friendemail[1]" placeholder="Friend Email"><br>
+                                    <input type="text" name="friendemail[2]" placeholder="Friend Email"><br>
+                                    <input type="text" name="friendemail[3]" placeholder="Friend Email"><br>
+                                 </div>
+                                    <input type="submit" value="Make group">
                                 </form>
+                                
                               
                             </div>
                         </div>
@@ -492,6 +526,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     <!-- jquery plugins here-->
     <!-- jquery -->
+  
     <script src="{% static 'js/jquery-1.12.1.min.js' %}"></script>
     <!-- popper js -->
     <script src="{% static 'js/popper.min.js' %}"></script>

@@ -25,13 +25,14 @@ SECRET_KEY = '905_4zt@@-+24kh_x)_0)hi)i39g9#_lt%@#vfe3m17p^i!h0q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.137.151','localhost']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'travello.apps.TravelloConfig',
+    'transaction.apps.TransactionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
