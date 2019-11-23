@@ -83,13 +83,14 @@ def add_friend(request):
         return redirect('/')
 
 
-
 def add_group(request):
     if request.method == 'POST':
         myid = request.user.id
         friend_array = []
         for i,j in request.POST.items():
             friend_array.append(j)
+        grp_name = friend_array[1]
+
         
         print(friend_array)
     pass
