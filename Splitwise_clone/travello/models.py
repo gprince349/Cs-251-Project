@@ -2,9 +2,9 @@ from django.db import models
 
 # Create your models here.
 
-class user_image(models.Model):
-    myid = models.IntegerField()
-    image = models.ImageField(upload_to='profile_image', blank=True)
+# class user_image(models.Model):
+#     myid = models.IntegerField()
+#     image = models.ImageField(upload_to='profile_image', blank=True)
 
 class group_name(models.Model):
     name = models.TextField()

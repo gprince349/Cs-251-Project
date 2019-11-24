@@ -189,10 +189,7 @@ def add_grp_transaction(request):
             return render(request, 'group_transaction.html' , {'other_detail': other_group_detail,'gid':gid ,'error':error,'details': details,'grp_transaction': grp_transaction})
 
 
-
 #grp transaction ends
-
-
 def update_tran_list(x,y):
     global transaction_list
     myid = x
@@ -261,3 +258,30 @@ def add_transaction(request):
             return render(request, 'transaction.html' , {'fid':fid ,'error':error,'total': cumulative_message,'fname': name, 'transactions': transaction_list})
 
     
+def settle_up(request):
+    if request.method == "POST":
+        myid = request.user.id
+        fid = request.POST['fid']
+        my = id_friends.objects.get(myid=myid,fid=fid)
+        friend = id_friends.objects.get(myid=fid,fid=myid)
+
+        x = my.owe - my.lent
+        if x > 0:
+            id_trans.objects.create(myid=myid,fid=fid,desc="settled up",owe=0,lent=x,pbu=x,pbf=0,obu=0,obf=x)
+            id_trans.objects.create(myid=fid,fid=myid,desc="settled up",owe=x,lent=0,pbu=0,pbf=x,obu=x,obf=0)
+
+        elif x < 0:
+            id_trans.objects.create(myid=myid,fid=fid,desc="settled up",owe=-x,lent=0,pbu=0,pbf=-x,obu=-x,obf=0)
+            id_trans.objects.create(myid=fid,fid=myid,desc="settled up",owe=0,lent=-x,pbu=-x,pbf=0,obu=0,obf=-x)
+
+        my.owe = 0
+        my.lent = 0
+        friend.owe = 0
+        friend.lent = 0
+        my.save()
+        friend.save()
+        
+        error = ''
+        update_tran_list(myid,fid)
+        cumulative(myid,fid)
+        return render(request, 'transaction.html' , {'fid':fid ,'error':error,'total': cumulative_message,'fname': name, 'transactions': transaction_list})

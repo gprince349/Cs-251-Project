@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import *
 from .forms import *
+from transaction.models import *
 from django.contrib.auth.base_user import AbstractBaseUser
 
 # Create your views here.
@@ -14,6 +15,33 @@ mymessage1 = ""
 friend_name_list = []
 friend_id_list = []
 group_list = []
+
+
+def settle_up(request):
+    if request.method == "POST":
+        myid = request.user.id
+        fid = request.POST['fid']
+        my = id_friends.objects.get(myid=myid,fid=fid)
+        friend = id_friends.objects.get(myid=fid,fid=myid)
+
+        x = my.owe - my.lent
+        if x > 0:
+            id_trans.objects.create(myid=myid,fid=fid,desc="settled up",owe=0,lent=x,pbu=x,pbf=0,obu=0,obf=x)
+            id_trans.objects.create(myid=fid,fid=myid,desc="settled up",owe=x,lent=0,pbu=0,pbf=x,obu=x,obf=0)
+
+        elif x < 0:
+            id_trans.objects.create(myid=myid,fid=fid,desc="settled up",owe=-x,lent=0,pbu=0,pbf=-x,obu=-x,obf=0)
+            id_trans.objects.create(myid=fid,fid=myid,desc="settled up",owe=0,lent=-x,pbu=-x,pbf=0,obu=0,obf=-x)
+
+        my.owe = 0
+        my.lent = 0
+        friend.owe = 0
+        friend.lent = 0
+        my.save()
+        friend.save()
+        
+
+
 
 def update_group_list(x):
     global group_list

@@ -127,6 +127,7 @@
 
       {% for message in grp_transaction%}
       
+      <button>
       <p>{{message.0.0}}<br></p>
       <p>{{message.1.0}}<br></p>
 
@@ -135,11 +136,14 @@
         {% if m.2 %}
           <p>{{m.0}} paid {{m.2}} owes {{m.3}}</p>
          {% endif %}
+    
 
         {% endfor %}
+      </button>
+      <br>
         <br>
       {% endfor %}
-     
+    
     </div>
     <div class="col-sm-2 sidenav">
       <div >

@@ -97,17 +97,28 @@
       <p id="friends"><p>
     </div>
     <div class="col-sm-8 text-left"> 
-      <h1>{{fname}} <emsp> <button type="button" class="btn btn-default">Settle Up</button></h1>
+      <h1>{{fname}} <emsp> 
+      <form action="settle_up" method="POST">
+            {% csrf_token %}
+        <input type="hidden" name="fid" value="{{fid}}">
+        <input type="submit" class="btn btn-default" value="Settle Up"/>
+      </form>
+
+      </h1>
       <hr>
       <p >{{total}}<p>
       <hr>
 
 
       {% for message in transactions%}
+      <a href="/">
+      <button >
       <p>{{message.2}}<br> OWE: {{message.3}} LENT: {{message.4}} <br>
         You paid {{message.5}}  {{fname}} paid {{message.6}}<br>
         You owed {{message.7}}  {{fname}} owed {{message.8}}<br>
       </p>
+    </button>
+  </a>
       <br><br>
       {% endfor %}
      
