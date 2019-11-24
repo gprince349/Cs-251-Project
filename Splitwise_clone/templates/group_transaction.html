@@ -64,6 +64,28 @@
     }
   </style>
 </head>
+<script>
+  var a = 1;
+  function show() {
+  if (a==0){
+    document.getElementById("transaction_form").style.display = "none";
+    a = 1;}
+    else {
+    document.getElementById("transaction_form").style.display = "block";
+    a =0;}
+  }
+  var i=4;
+  function add_row(){
+      var container = document.getElementById("inputs");
+       var input = document.createElement("input")
+          input.type = "text";
+          input.name = "friendemail[" + i + "]";
+          i = i+1;
+          input.placeholder = "Friend Email";
+      container.appendChild(input);
+      container.appendChild(document.createElement("br"));          
+  }
+  </script>
 <body>
 
 <nav class="navbar navbar-inverse">
@@ -80,7 +102,7 @@
         <li class="active"><a href="/">Home</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"></span>{{fname}}</a></li>
+        <li><a href="#"></span>{{other_detail.0}}</a></li>
       </ul>
     </div>
   </div>
@@ -97,32 +119,42 @@
       <p id="friends"><p>
     </div>
     <div class="col-sm-8 text-left"> 
-      <h1>{{fname}} <emsp> <button type="button" class="btn btn-default">Settle Up</button></h1>
+      <h1>{{other_detail.0}} <emsp> <button type="button" class="btn btn-default">Settle Up</button></h1>
       <hr>
-      <p >{{total}}<p>
+      <p >{{other_detail.1}}<p>
       <hr>
 
 
-      {% for message in transactions%}
-      <p>{{message.2}}<br> OWE: {{message.3}} LENT: {{message.4}} <br>
-        You paid {{message.5}}  {{fname}} paid {{message.6}}<br>
-        You owed {{message.7}}  {{fname}} owed {{message.8}}<br>
-      </p>
-      <br><br>
+      {% for message in grp_transaction%}
+      
+      <p>{{message.0.0}}<br></p>
+      <p>{{message.1.0}}<br></p>
+
+        {% for m in message %}
+        
+        {% if m.2 %}
+          <p>{{m.0}} paid {{m.2}} owes {{m.3}}</p>
+         {% endif %}
+
+        {% endfor %}
+        <br>
       {% endfor %}
      
     </div>
     <div class="col-sm-2 sidenav">
       <div >
-      	<h2>Add an expense</h2>
-   
-            <form action="add_transaction" method="POST">
+        <h2>Add an expense</h2>
+        <button onclick="show()">ADD Expense</button><br>
+            <form style="display: none;" id="transaction_form" action="add_grp_transaction" method="POST">
                     {% csrf_token %}
-                <input type="hidden" name="fid" value="{{fid}}">
+                <input type="hidden" name="gid" value="{{gid}}">
                 <input type="text" name="description"  placeholder="Description"/><br>
                 <input type="text" name="money"  placeholder="money"/><br>
-                <input type="text" name="paid_by_user" placeholder="Paid by you"><input type="text" name="paid_by_friend" placeholder="Paid by {{fname}}">
-                <input type="text" name="owed_by_user" placeholder="Owed by you"><input type="text" name="owed_by_friend" placeholder="Owed by {{fname}}">
+
+                {% for x in details %}
+                <label>{{x.0}}</label><br>
+                <input type="text" name="paid_by_{{x.1}}" placeholder="Paid"><input type="text" name="owed_by_{{x.1}}" placeholder="Owed"><br>
+                {% endfor %}
                 <input type="submit" name="" id="">
             </form>
            <p>{{error}}</p>

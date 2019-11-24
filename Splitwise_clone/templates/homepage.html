@@ -52,6 +52,8 @@
         }
         </script>
 <body>
+    
+    
     <!--::header part start::-->
     <header class="main_menu">
         <div class="container">
@@ -98,7 +100,7 @@
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Change Password</a>
+                                    <a class="nav-link" href="login_page/change">Edit Profile</a>
                                 </li>
                             </ul>
                         
@@ -140,7 +142,9 @@
                                 <form action="transaction/transactions" method="POST">
                                      {% csrf_token %}
                                         <input type="hidden" name="fid" value="{{x.1}}">
-                                        <button name="friend" width="80px" type="submit">{{x.0}}</button>
+                                       
+                                        <button style="width: 10em ;" name="friend"  type="submit">{{x.0}}</button>
+                                   
                                 </form>
                                 {% endfor %}
                                 <br> <br>
@@ -158,8 +162,17 @@
                                  </div>
                                     <input type="submit" value="Make group">
                                 </form>
+
+                                <p>{{mymessage1}}</p><br>
+                                {% for x in groups %}
+                                <form action="transaction/grp_transaction" method="POST">
+                                     {% csrf_token %}
+                                         <input type="hidden" name="gid" value="{{x.0}}">
+                                        <button style="width: 10em ;" name="{{x.0}}" width="80px" type="submit">{{x.1}}</button>
+                                </form>
+                                {% endfor %}
                                 
-                              
+                                                          
                             </div>
                         </div>
                    

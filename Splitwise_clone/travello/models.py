@@ -2,8 +2,23 @@ from django.db import models
 
 # Create your models here.
 
+class user_image(models.Model):
+    myid = models.IntegerField()
+    image = models.ImageField(upload_to='profile_image', blank=True)
+
+class group_name(models.Model):
+    name = models.TextField()
+
+
+class group_member(models.Model):
+    gid = models.IntegerField()
+    pid = models.IntegerField()
+    net = models.IntegerField(default=0)
+
+
+
+
 class Destination(models.Model):
-  
     name = models.TextField(max_length=100)
     price = models.IntegerField()
     image = models.ImageField(upload_to='pics')

@@ -3,13 +3,31 @@ from .models import Destination
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import *
-
-
+from .forms import *
+from django.contrib.auth.base_user import AbstractBaseUser
 
 # Create your views here.
+
+
 mymessage = ""
+mymessage1 = ""
 friend_name_list = []
 friend_id_list = []
+group_list = []
+
+def update_group_list(x):
+    global group_list
+    group_list =[]
+    myid = x
+    grp_object_list = group_member.objects.filter(pid=myid)
+    grp_id_list = [i.gid for i in grp_object_list]
+    for i in grp_id_list:
+        y = group_name.objects.get(id=i)
+        group_list.append([i, y.name])
+
+
+
+
 def update_list(x):
     global friend_name_list, mymessage, friend_id_list
     # mymessage = m
@@ -26,42 +44,19 @@ def update_list(x):
 
 
 def index(request):
-    dest1 = Destination()
-    dest1.name = 'Mumbai'
-    dest1.image = 'destination_1.jpg'
-    dest1.desc = 'The city that never sleeps'
-    dest1.price = 800
-    dest1.offer = False
-
-    dest2 = Destination()
-    dest2.name = 'Hyderabad'
-    dest2.image = 'destination_2.jpg'
-    dest2.desc = 'The city that never sleeps'
-    dest2.price = 1400
-    dest2.offer = True
-
-
-    dest3 = Destination()
-    dest3.name = 'banglore'
-    dest3.image = 'destination_3.jpg'
-    dest3.desc = 'The city that never sleeps'
-    dest3.price = 1500
-    dest3.offer = False
-
-    dest = [dest1,dest2, dest3]
-
     dest_new = Destination.objects.all()
     y = request.user.id
     if y is not None:
      update_list(int(y))
+     update_group_list(int(y))
     for f in friend_name_list:
         print(f)
-    return render(request,'homepage.html', {'mymessage': mymessage, 'ids': friend_id_list ,'friends': friend_name_list})
+    return render(request,'homepage.html', {'mymessage': mymessage, 'ids': friend_id_list ,'friends': friend_name_list, 'groups' : group_list})
 
 
 def add_friend(request):
     if request.method == 'POST':
-        
+        update_group_list(request.user.id)
         friend_email = request.POST['friend_email']
         if User.objects.filter(email=friend_email).exists():
             curr_user = User.objects.get(email=friend_email)
@@ -69,16 +64,16 @@ def add_friend(request):
             fid=curr_user.id
             if id_friends.objects.filter(myid=myid,fid=fid).exists():
                 update_list(int(myid))
-                return render(request,'homepage.html', {'mymessage': 'already your friend', 'friends': friend_name_list})
+                return render(request,'homepage.html', {'mymessage': 'already your friend', 'friends': friend_name_list, 'groups' : group_list})
             else:
                 id_friends_instance = id_friends.objects.create(myid=myid,fid=fid,owe=0,lent=0)
                 id_friends_instance = id_friends.objects.create(myid=fid,fid=myid,owe=0,lent=0)
                 update_list(int(myid))
-                return render(request,'homepage.html', {'mymessage': 'successfully added', 'friends': friend_name_list})
+                return render(request,'homepage.html', {'mymessage': 'successfully added', 'friends': friend_name_list, 'groups' : group_list})
         else :
             mymessage = 'This email is not registered with splitwise'
             update_list(int(request.user.id))
-            return render(request,'homepage.html', {'mymessage': mymessage, 'friends': friend_name_list})
+            return render(request,'homepage.html', {'mymessage': mymessage, 'friends': friend_name_list, 'groups' : group_list})
     else:
         return redirect('/')
 
@@ -86,11 +81,31 @@ def add_friend(request):
 def add_group(request):
     if request.method == 'POST':
         myid = request.user.id
+        update_list(int(myid))
         friend_array = []
         for i,j in request.POST.items():
             friend_array.append(j)
         grp_name = friend_array[1]
 
-        
-        print(friend_array)
-    pass
+        truth = True
+        for i in friend_array[2:]:
+            if i != '' :
+                truth = truth and User.objects.filter(email=i).exists()  
+        if truth == False:
+            mymessage1 = "Friend email not registered with splitwise First invite them"
+            update_group_list(int(myid))
+            return render(request,'homepage.html', {'mymessage1': mymessage1, 'friends': friend_name_list, 'groups' : group_list})
+        else:
+            group_name.objects.create(name=grp_name)
+            gid = group_name.objects.latest('id').id
+            for i in friend_array[2:]:
+                if i!='':
+                    pid = User.objects.get(email=i).id   
+                    group_member.objects.create(gid=gid,pid=pid)
+            
+            group_member.objects.create(gid=gid,pid=myid)
+
+            update_group_list(int(myid))
+            return render(request,'homepage.html', {'mymessage1':'successfully created', 'friends': friend_name_list, 'groups' : group_list})
+               
+    
